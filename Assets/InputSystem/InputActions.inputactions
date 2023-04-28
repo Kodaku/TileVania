@@ -266,7 +266,7 @@
                 {
                     "name": "",
                     "id": "af369bc7-e3e7-46a4-8321-a4dc195b09b7",
-                    "path": "<Keyboard>/backspace",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
