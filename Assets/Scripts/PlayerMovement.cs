@@ -7,8 +7,12 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float runSpeed = 10.0f;
     [SerializeField] float jumpSpeed = 5.0f;
+    [SerializeField] Vector2 deathKick = new Vector2(10.0f, 10.0f);
+    [SerializeField] GameObject bullet;
+    [SerializeField] Transform gun;
     float originalGravity;
-    CapsuleCollider2D playerCollider;
+    bool isAlive = true;
+    CapsuleCollider2D bodyCollider;
     Vector2 moveInput;
     Rigidbody2D rb;
     Animator animator;
@@ -18,29 +22,42 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         originalGravity = rb.gravityScale;
         animator = GetComponent<Animator>();
-        playerCollider = GetComponent<CapsuleCollider2D>();
+        bodyCollider = GetComponent<CapsuleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Run();
-        FlipSprite();
-        ClimbLadder();
+        if(isAlive) {
+            Run();
+            FlipSprite();
+            ClimbLadder();
+            Die();
+        }
     }
 
     void OnMove(InputValue inputValue) {
-        moveInput = inputValue.Get<Vector2>();
+        if (isAlive) {
+            moveInput = inputValue.Get<Vector2>();
+        }
     }
 
     void OnJump(InputValue inputValue) {
-        if (!playerCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) {
-            return;
-        }
-        if(inputValue.isPressed) {
-            rb.velocity += new Vector2(0.0f, jumpSpeed);
+        if(isAlive) {
+            if (!bodyCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) {
+                return;
+            }
+            if(inputValue.isPressed) {
+                rb.velocity += new Vector2(0.0f, jumpSpeed);
+            }
         }
     }
+
+    void OnFire(InputValue inputValue) {
+        if(inputValue.isPressed && isAlive) {
+            Instantiate(bullet, gun.position, transform.rotation);
+        }
+    } 
 
     void Run() {
         Vector2 playerVelocity = new Vector2(moveInput.x * runSpeed, rb.velocity.y);
@@ -58,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void ClimbLadder() {
-        if(playerCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) {
+        if(bodyCollider.IsTouchingLayers(LayerMask.GetMask("Climbing"))) {
             Vector2 playerVelocity = new Vector2(rb.velocity.x, moveInput.y * runSpeed);
             rb.velocity = playerVelocity;
             rb.gravityScale = 0.0f;
@@ -73,6 +90,13 @@ public class PlayerMovement : MonoBehaviour
         else {
             rb.gravityScale = originalGravity;
             animator.SetBool("IsClimbing", false);
+        }
+    }
+    private void Die() {
+        if(bodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemies", "Hazards"))) {
+            isAlive = false;
+            animator.SetTrigger("Dying");
+            rb.velocity = deathKick;
         }
     }
 }
