@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 public class LevelExit : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other) {
-        StartCoroutine(LoadNextLevel());
+        if (other.tag == "Player") {
+            StartCoroutine(LoadNextLevel());   
+        }
     }
 
     private IEnumerator LoadNextLevel() {
@@ -16,6 +18,7 @@ public class LevelExit : MonoBehaviour
         if (nextSceneIndex == SceneManager.sceneCountInBuildSettings) {
             nextSceneIndex = 0;
         }
+        FindObjectOfType<ScenePersist>().ResetScenePersist();
         SceneManager.LoadScene(nextSceneIndex);
     }
 }

@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 5015856298994757212}
   m_Layer: 8
   m_Name: Franco (Player)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,5 +224,5 @@ MonoBehaviour:
   runSpeed: 7
   jumpSpeed: 20
   deathKick: {x: 10, y: 10}
-  bullet: {fileID: 0}
-  gun: {fileID: 0}
+  bullet: {fileID: 3932986048850140787, guid: 4c64d2b1b98fc4747b3e7a2916b74b24, type: 3}
+  gun: {fileID: 6371934047026159209}

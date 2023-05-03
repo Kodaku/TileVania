@@ -24,6 +24,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.tag == "Enemy") {
+            FindObjectOfType<GameSession>().AddToScore(100);
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
